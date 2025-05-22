@@ -378,12 +378,29 @@ impl TaskTracker {
     #[track_caller]
     #[cfg(feature = "rt")]
     #[cfg_attr(docsrs, doc(cfg(feature = "rt")))]
+    #[cfg(not(target_family = "wasm"))]
     pub fn spawn<F>(&self, task: F) -> JoinHandle<F::Output>
     where
         F: Future + Send + 'static,
         F::Output: Send + 'static,
     {
         tokio::task::spawn(self.track_future(task))
+    }
+
+    /// Spawn the provided future on the current Tokio runtime, and track it in this `TaskTracker`.
+    ///
+    /// This is equivalent to `tokio::spawn(tracker.track_future(task))`.
+    #[inline]
+    #[track_caller]
+    #[cfg(feature = "rt")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "rt")))]
+    #[cfg(target_family = "wasm")]
+    pub fn spawn<F>(&self, task: F) -> tokio_with_wasm::task::JoinHandle<F::Output>
+    where
+        F: Future + Send + 'static,
+        F::Output: Send + 'static,
+    {
+        tokio_with_wasm::task::spawn(self.track_future(task))
     }
 
     /// Spawn the provided future on the provided Tokio runtime, and track it in this `TaskTracker`.

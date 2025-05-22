@@ -45,6 +45,7 @@ pin-project-lite = "0.2.11"
 slab = { version = "0.4.4", optional = true } # Backs `DelayQueue`
 tracing = { version = "0.1.29", default-features = false, features = ["std"], optional = true }
 hashbrown = { version = "0.15.0", default-features = false, optional = true }
+tokio_with_wasm = { version = "0.8.5", features = ["rt", "rt-multi-thread", "sync"] }
 
 [dev-dependencies]
 tokio = { version = "1.0.0", path = "../tokio", features = ["full"] }
